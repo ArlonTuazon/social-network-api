@@ -33,4 +33,55 @@ const thoughtsController = {
             res.status(500).json(err);
         });
     },
+
+    getThoughtsById({params}, res) {
+        Thoughts.findOne({ _id: params.id })
+        .populate({
+            path: 'reactions',
+            select: '-__v'
+        })
+        .select('-__v')
+        .then(dbThoughts => {
+            if(!dbThoughts) {
+            res.status(404).json({message: 'No thoughts with this ID!'});
+            return;
+        }
+        res.json(dbThoughts)
+        })
+        .catch(err => {
+            console.log(err);
+            res.sendStatus(400);
+        });
+    },
+
+    updateThoughts({params, body}, res) {
+        Thoughts.findOneAndUpdate({_id: params.id}, body, {new: true, runValidators: true})
+        .populate({
+            path: 'reactions', 
+            select: '-__v'
+        })
+        .select('-___v')
+        .then(dbThoughts => {
+            if (!dbThoughts) {
+                res.status(404).json({message: 'No thoughts with this ID!'});
+                return;
+            }
+                res.json(dbThoughts);
+        })
+        .catch(err => res.json(err));
+    },
+
+    deleteThoughts({params}, res) {
+        Thoughts.findOneAndDelete({_id: params.id})
+        .then(dbThoughts => {
+            if (!dbThoughts) {
+                res.status(404).json({message: 'No thoughts with this ID!'});
+                return;
+            }
+            res.json(dbThoughts);
+            })
+            .catch(err => res.status(400).json(err));
+    },
 }
+
+module.exports = thoughtsController;
