@@ -2,9 +2,9 @@ const { Schema, model, Types } = require('mongoose');
 
 const dateFormat = require('../utils/dateformat');
 
-const ReplySchema = new Schema (
+const ReactionsSchema = new Schema (
     {
-        replyId: {
+        reactionId: {
             type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId()
         },

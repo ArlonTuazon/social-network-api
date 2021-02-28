@@ -1,7 +1,7 @@
 const {Thoughts, Users} = require('../models');
 
 const thoughtsController = {
-    createThought({params, body}, res) {
+    createThoughts({params, body}, res) {
         Thoughts.create(body)
         .then (({_id}) => {
             return Users.findOneAndUpdate(
@@ -89,12 +89,12 @@ const thoughtsController = {
         Thoughts.findOneAndUpdate({_id: params.thoughtId}, {$push: {reactions: body}}, {new: true, runValidators: true})
         .populate({path: 'reactions', select: '-__v'})
         .select('-__v')
-        .then(dbThoughtsData => {
-        if (!dbThoughtsData) {
+        .then(dbThoughts => {
+        if (!dbThoughts) {
             res.status(404).json({message: 'No thoughts with this particular ID!'});
             return;
         }
-        res.json(dbThoughtsData);
+        res.json(dbThoughts);
         })
         .catch(err => res.status(400).json(err))
 
